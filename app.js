@@ -4,11 +4,14 @@ var gc = canvas.getContext("2d");
 var lastDate = new Date();
 var timeSinceLastTick = 0;
 var TIMETOROT = 10;
-var foodLiveTime = 0;
 var TIMEBETWEENTICKS = 0.1;
+var minutes = 0;
+var secounds = 0;
 
+//how much food is at the start
 var startFood = 8;
 
+//set the score
 var score = 0;
 
 //Head position
@@ -114,16 +117,23 @@ document.addEventListener("keydown", function(event){
 //the update function
 function update(){
     var thisDate = new Date();
-    var deltTime = (thisDate.getTime() - lastDate.getTime()) / 1000;
+    var deltaTime = (thisDate.getTime() - lastDate.getTime()) / 1000;
     lastDate = thisDate;
     
-    timeSinceLastTick += deltTime;
+	secounds += deltaTime;
+	
+    timeSinceLastTick += deltaTime;
     
     if(!gameOver && timeSinceLastTick > TIMEBETWEENTICKS){
         timeSinceLastTick -= TIMEBETWEENTICKS;
         gc.fillStyle = "#000000";
         gc.fillRect(0, 0, canvas.width, canvas.height);
         
+		if(secounds >= 60){
+			secounds = 0;
+			minutes++;
+		}
+		
         //work down the control queue
         if(controlQueue.length > 0){
             //you cant run in your self
@@ -251,6 +261,8 @@ function update(){
         gc.fillStyle = "white";
         gc.font = "20px Arial";
         gc.fillText("Score: " + score, 650, 50);
+		
+		gc.fillText(Math.round(minutes) + ":" + Math.round(secounds), 650, 80);
     }
 }
 
