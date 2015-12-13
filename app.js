@@ -7,6 +7,8 @@ var TIMETOROT = 10;
 var foodLiveTime = 0;
 var TIMEBETWEENTICKS = 0.1;
 
+var startFood = 8;
+
 var score = 0;
 
 //Head position
@@ -96,7 +98,7 @@ for(var i = 0; i<4; i++){
 }
 
 //place the start food
-for(var i = 0; i<5;i++){
+for(var i = 0; i<startFood;i++){
     new Food(-100,-100, 000000);
     placeFood(i);
 }
@@ -164,6 +166,32 @@ function update(){
         case(DOWN):
                 y++;
                 break;
+        }
+        
+        //mackes the snake faster
+        if(score === 20){
+            TIMEBETWEENTICKS =  0.07;
+        }if(score === 50){
+            TIMEBETWEENTICKS = 0.06;
+        }if(score === 70){
+            TIMEBETWEENTICKS = 0.05;
+        }if(score === 100){
+            TIMEBETWEENTICKS = 0.04;
+        }
+        
+        //spawn more food if the score higher
+        if(score === 20 && food.length === startFood){
+            new Food(-100-100,1000000);
+            placeFood(food.length - 1);
+        }if(score === 50 && food.length === (startFood+1)){
+            new Food(-100-100,1000000);
+            placeFood(food.length - 1);
+        }if(score === 70 && food.length === (startFood+2)){
+            new Food(-100-100,1000000);
+            placeFood(food.length - 1);
+        }if(score === 100 && food.length === (startFood+3)){
+            new Food(-100-100,1000000);
+            placeFood(food.length - 1);
         }
         
         //if you hit the border you come on the other side out
