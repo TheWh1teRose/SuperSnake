@@ -11,6 +11,9 @@ var secounds = 0;
 //how much food is at the start
 var startFood = 8;
 
+//set the liveTime of the food
+var liveTime = 15;
+
 //set the score
 var score = 0;
 
@@ -51,7 +54,7 @@ var food = [];
 var gameOver = false;
 
 //function for the food
-function Food(x, y, foodColor){
+function Food(x, y, foodColor, liveTime){
     food.push(this);
 }
 
@@ -76,7 +79,7 @@ function placeFood(index){
                     continue; 
                 }  
             }
-                
+        food[index].liveTime = liveTime;
         }
         if(!isOnOtherGameObject){
             break;
@@ -102,7 +105,7 @@ for(var i = 0; i<4; i++){
 
 //place the start food
 for(var i = 0; i<startFood;i++){
-    new Food(-100,-100, 000000);
+    new Food(-100,-100, 000000, liveTime);
     placeFood(i);
 }
 
@@ -116,11 +119,21 @@ document.addEventListener("keydown", function(event){
 
 //the update function
 function update(){
+    //every thing how deals with delta time must be before the frames are computed
     var thisDate = new Date();
     var deltaTime = (thisDate.getTime() - lastDate.getTime()) / 1000;
     lastDate = thisDate;
     
 	secounds += deltaTime;
+    
+    //let the food rot
+        for(var i = 0; i<food.length; i++){
+            if(food[i].liveTime > 0){
+                food[i].liveTime -= deltaTime;
+            }else{
+                 food[i].foodColor = "15790E"
+            }
+        }
 	
     timeSinceLastTick += deltaTime;
     
@@ -191,17 +204,28 @@ function update(){
         
         //spawn more food if the score higher
         if(score === 20 && food.length === startFood){
-            new Food(-100-100,1000000);
+            new Food(-100-100,1000000, liveTime);
             placeFood(food.length - 1);
         }if(score === 50 && food.length === (startFood+1)){
-            new Food(-100-100,1000000);
+            new Food(-100-100,1000000, liveTime);
             placeFood(food.length - 1);
         }if(score === 70 && food.length === (startFood+2)){
-            new Food(-100-100,1000000);
+            new Food(-100-100,1000000, liveTime);
             placeFood(food.length - 1);
         }if(score === 100 && food.length === (startFood+3)){
-            new Food(-100-100,1000000);
+            new Food(-100-100,1000000, liveTime);
             placeFood(food.length - 1);
+        }
+        
+        
+        
+        //if the player hit a roted food he is game over
+        for(var i = 0; i<food.length; i++){
+            if(food[i].liveTime <= 0){
+                if(food[i].x === x && food[i].y === y){
+                    gameOver = true;
+                }
+            }
         }
         
         //if you hit the border you come on the other side out
@@ -220,7 +244,9 @@ function update(){
         
         //macke a blick effect
         for(var i = 0;i<food.length;i++){
-                food[i].foodColor = randomNumber(1000000);
+            if(food[i].liveTime > 0){
+                food[i].foodColor = randomNumber(1000000);  
+            }
         }
         
         //if you hit a segment is the game over
