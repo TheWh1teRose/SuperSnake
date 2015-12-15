@@ -9,10 +9,10 @@ var minutes = 0;
 var secounds = 0;
 
 //how much food is at the start
-var startFood = 8;
+var startFood = 5;
 
 //set the liveTime of the food
-var liveTime = 15;
+var liveTime = 30;
 
 //set the score
 var score = 0;
@@ -31,7 +31,7 @@ var LEFT = 37;
 var UP = 38;
 var RIGHT = 39;
 var DOWN = 40;
-
+    x
 //look of the snake
 var dir = RIGHT;
 
@@ -99,7 +99,7 @@ function Segment(x, y, foodColor){
 var controlQueue = [];
 
 //place the start segments
-for(var i = 0; i<4; i++){
+for(var i = 0; i<3; i++){
     new Segment(-100, 100, randomNumber(1000000));  
 }
 
@@ -130,8 +130,15 @@ function update(){
         for(var i = 0; i<food.length; i++){
             if(food[i].liveTime > 0){
                 food[i].liveTime -= deltaTime;
-            }else{
-                 food[i].foodColor = "15790E"
+            }
+            if(food[i].liveTime < (liveTime / 2)){
+                 food[i].foodColor = "2D770D";
+            }
+            if(food[i].liveTime < (liveTime / 3)){
+                food[i].foodColor = "FFFF00";
+            }
+            if(food[i].liveTime <= 0){
+                food[i].foodColor = "754D17";
             }
         }
 	
@@ -191,7 +198,7 @@ function update(){
                 break;
         }
         
-        //mackes the snake faster
+        //mackes the snake faste
         if(score === 20){
             TIMEBETWEENTICKS =  0.07;
         }if(score === 50){
@@ -244,7 +251,7 @@ function update(){
         
         //macke a blick effect
         for(var i = 0;i<food.length;i++){
-            if(food[i].liveTime > 0){
+            if(food[i].liveTime > (liveTime / 2)){
                 food[i].foodColor = randomNumber(1000000);  
             }
         }
