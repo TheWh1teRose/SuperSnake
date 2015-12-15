@@ -12,7 +12,7 @@ var secounds = 0;
 var startFood = 5;
 
 //set the liveTime of the food
-var liveTime = 30;
+var liveTime = 40;
 
 //set the score
 var score = 0;
@@ -272,7 +272,11 @@ function update(){
         //set a new segment and place a new food
         for(var i = 0; i<food.length; i++){
            if(x === food[i].x && y === food[i].y){
-            new Segment(-100, -100, food[i].foodColor);
+               if(food[i].liveTime < (liveTime/2)){
+                   new Segment(-100, -100, randomNumber(1000000));
+               }else{
+                   new Segment(-100, -100, food[i].foodColor);
+               }
             placeFood(i);
                score++;
             } 
