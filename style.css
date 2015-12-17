@@ -3,7 +3,13 @@ h1{
     font-family: sans-serif;
     color: crimson;
 }
+h2{
+    font-size: 40px;
+    font-family: sans-serif;
+    color: firebrick;
+}
 .gameMode{
     font-size: 30px;
+    font-family: sans-serif;
     color: darkorchid;
 }
