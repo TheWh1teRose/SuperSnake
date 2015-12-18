@@ -4,6 +4,8 @@ var gc = canvas.getContext("2d");
 var lastDate = new Date();
 var timeSinceLastTick = 0;
 var TIMETOROT = 10;
+var timeSinceLastFlash = 0;
+var TIMETOFLASH = 0.1;
 var TIMEBETWEENTICKS = 0.1;
 var minutes = 0;
 var secounds = 0;
@@ -117,12 +119,15 @@ document.addEventListener("keydown", function(event){
     }
 });
 
+//////////////////////////////////////////////////////////////////////////////////////////
 //the update function
 function update(){
     //every thing how deals with delta time must be before the frames are computed
     var thisDate = new Date();
     var deltaTime = (thisDate.getTime() - lastDate.getTime()) / 1000;
     lastDate = thisDate;
+    
+    timeSinceLastFlash += deltaTime;
     
 	secounds += deltaTime;
     
@@ -249,12 +254,16 @@ function update(){
             y = 0;
         }
         
-        //macke a blick effect
-        for(var i = 0;i<food.length;i++){
-            if(food[i].liveTime > (liveTime / 2)){
-                food[i].foodColor = randomNumber(1000000);  
+        //macke a flash effect
+        if(timeSinceLastFlash > TIMETOFLASH){
+            for(var i = 0;i<food.length;i++){
+                if(food[i].liveTime > (liveTime / 2)){
+                    food[i].foodColor = randomNumber(1000000);
+                }
             }
+            timeSinceLastFlash = 0;
         }
+        
         
         //if you hit a segment is the game over
         for(var i = 0; i<segments.length; i++){
@@ -305,3 +314,4 @@ function update(){
 
 //set the interval of the update function
 window.setInterval(update, 1);
+//////////////////////////////////////////////////////////////////////////////////////////
