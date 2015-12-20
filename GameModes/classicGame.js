@@ -7,15 +7,12 @@ var TIMETOROT = 10;
 var timeSinceLastFlash = 0;
 var TIMETOFLASH = 0.1;
 var TIMEBETWEENTICKS = 0.1;
-var paus = false;
+var pause = false;
 var minutes = 0;
 var secounds = 0;
 
 //how much food is at the start
 var startFood = 5;
-
-//set the liveTime of the food
-var liveTime = 40;
 
 //set the score
 var score = 0;
@@ -34,14 +31,15 @@ var LEFT = 37;
 var UP = 38;
 var RIGHT = 39;
 var DOWN = 40;
-    x
+
 //look of the snake
 var dir = RIGHT;
 
 //food variables
-var foodX = 0;
-var foodY = 0;
 var foodColor = 999999;
+
+//set the liveTime of the food
+var liveTime = 40;
 
 //create a random number
 function randomNumber(range){
@@ -75,20 +73,22 @@ function placeFood(index){
                 continue;
             }
         }
-        for(var i = 0;i<food.length;i++){
+        if(!isOnOtherGameObject){
+            for(var i = 0;i<food.length;i++){
             if(!food[index] === food[i]){
               if(food[index].x === food[i].x && food[index].y === food[i].y){
                     isOnOtherGameObject = true;
                     continue; 
                 }  
+            }   
             }
-        food[index].liveTime = liveTime;
         }
         if(!isOnOtherGameObject){
             break;
         }
     }
     food[index].foodColor = randomNumber(1000000);
+    food[index].liveTime = liveTime;
 }
 
 //function for the segments
@@ -115,7 +115,7 @@ for(var i = 0; i<startFood;i++){
 //the event listener for keys
 document.addEventListener("keydown", function(event){
     var kc = event.keyCode;
-    if(controlQueue.length < 5 &&kc === LEFT || kc === RIGHT || kc === UP || kc === DOWN){
+    if(controlQueue.length < 5 && kc === LEFT || kc === RIGHT || kc === UP || kc === DOWN){
         controlQueue.push(kc);
     }
 });
@@ -127,15 +127,15 @@ function update(){
     var thisDate = new Date();
     var deltaTime = (thisDate.getTime() - lastDate.getTime()) / 1000;
     lastDate = thisDate;
+    timeSinceLastTick += deltaTime;
     
     timeSinceLastFlash += deltaTime;
-    if(!paus){
+    if(!pause){
         secounds += deltaTime;
     }
-	
     
     //let the food rot
-    if(!paus){
+    if(!pause){
         for(var i = 0; i<food.length; i++){
             if(food[i].liveTime > 0){
                 food[i].liveTime -= deltaTime;
@@ -146,16 +146,16 @@ function update(){
             if(food[i].liveTime < (liveTime / 3)){
                 food[i].foodColor = "FFFF00";
             }
+            if(food[i].liveTime < (liveTime / 4)){
+                food[i].foodColor = "586921";
+            }
             if(food[i].liveTime <= 0){
                 food[i].foodColor = "754D17";
             }
         }
-    }
-        
-	
-    timeSinceLastTick += deltaTime;
+    } 
     
-    if(!gameOver && timeSinceLastTick > TIMEBETWEENTICKS && !paus){
+    if(!gameOver && timeSinceLastTick > TIMEBETWEENTICKS && !pause){
         timeSinceLastTick -= TIMEBETWEENTICKS;
         gc.fillStyle = "#000000";
         gc.fillRect(0, 0, canvas.width, canvas.height);
@@ -317,6 +317,14 @@ function update(){
         gc.fillText("Score: " + score, 650, 50);
 		
 		gc.fillText(Math.round(minutes) + ":" + Math.round(secounds), 650, 80);
+        
+        if(gameOver){
+            gc.fillStyle = "#ffffff";
+            gc.font  = "125px Arial";
+            gc.fillText("GAME OVER", 10, 400);
+            gc.font  = "50px Arial";
+            gc.fillText("F5 to restart", 280, 460);
+        }
     }
 }
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -324,9 +332,9 @@ function update(){
 window.setInterval(update, 1);
 
 function paused(){
-            if(paus === false){
-                paus = true;
+            if(pause === false){
+                pause = true;
             }else{
-                paus = false;
+                pause = false;
             }
         } 
