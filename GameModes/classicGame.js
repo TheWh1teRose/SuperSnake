@@ -7,6 +7,7 @@ var TIMETOROT = 10;
 var timeSinceLastFlash = 0;
 var TIMETOFLASH = 0.1;
 var TIMEBETWEENTICKS = 0.1;
+var paus = false;
 var minutes = 0;
 var secounds = 0;
 
@@ -128,10 +129,13 @@ function update(){
     lastDate = thisDate;
     
     timeSinceLastFlash += deltaTime;
-    
-	secounds += deltaTime;
+    if(!paus){
+        secounds += deltaTime;
+    }
+	
     
     //let the food rot
+    if(!paus){
         for(var i = 0; i<food.length; i++){
             if(food[i].liveTime > 0){
                 food[i].liveTime -= deltaTime;
@@ -146,10 +150,12 @@ function update(){
                 food[i].foodColor = "754D17";
             }
         }
+    }
+        
 	
     timeSinceLastTick += deltaTime;
     
-    if(!gameOver && timeSinceLastTick > TIMEBETWEENTICKS){
+    if(!gameOver && timeSinceLastTick > TIMEBETWEENTICKS && !paus){
         timeSinceLastTick -= TIMEBETWEENTICKS;
         gc.fillStyle = "#000000";
         gc.fillRect(0, 0, canvas.width, canvas.height);
@@ -291,6 +297,8 @@ function update(){
             } 
         }
         
+        
+        
         segments[0].x = x;
         segments[0].y = y;
         
@@ -311,7 +319,14 @@ function update(){
 		gc.fillText(Math.round(minutes) + ":" + Math.round(secounds), 650, 80);
     }
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////
 //set the interval of the update function
 window.setInterval(update, 1);
-//////////////////////////////////////////////////////////////////////////////////////////
+
+function paused(){
+            if(paus === false){
+                paus = true;
+            }else{
+                paus = false;
+            }
+        } 
